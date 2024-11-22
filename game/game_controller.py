@@ -18,6 +18,9 @@ class GameControl:
         self.timeout_status = False
         self.reset_request = False
         self.all_released = True
+        self._display_control.print_line(f'Time: {GameControl.TIMEOUT}', 1, True)
+        self.target_button = self._button_control.switch_random_led()
+
 
     def timer(self):
         while True:
