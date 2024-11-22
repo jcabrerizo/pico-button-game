@@ -26,7 +26,7 @@ class DisplayController:
             self.clear_line(line_num, False)
         x = 0
         y = (line_num-1)*LINE_HEIGHT
-        print(f'print line {msg} - {x} , {y}')
+        # print(f'print line {msg} - {x} , {y}') 
         self._display.text(msg, x, y)
         if show_immediately:
             self._display.show()
