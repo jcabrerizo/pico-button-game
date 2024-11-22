@@ -9,10 +9,11 @@ board_led = Pin("LED", Pin.OUT)
 
 display_ctr = DisplayController()
 
-BLUE = Button("BLUE", led_pin=22, button_pin=11)
+BLUE = Button("BLUE", led_pin=22, button_pin=8)
 RED = Button("RED", led_pin=28, button_pin=5)
+WHITE = Button("WHITE", led_pin=21, button_pin=11)
 
-buttons = (BLUE, RED)
+buttons = (BLUE, RED, WHITE)
 
 button_ctr = ButtonControl(buttons)
 game = GameControl(
@@ -37,6 +38,5 @@ board_led.off()
 display_ctr.clear_all()
 display_ctr.print_line('GAME OVER', 4, center=True)
 print("-GAME OVER-")
-# todo loop though the buttons
 button_ctr.turn_all_off()
 reset()
