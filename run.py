@@ -5,6 +5,7 @@ from machine import Pin, Timer, reset
 from utime import sleep
 import _thread
 from display import DisplayController
+
 board_led = Pin("LED", Pin.OUT)
 
 display_ctr = DisplayController()

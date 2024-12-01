@@ -21,4 +21,8 @@ class Button:
     def toggle(self) -> None:
         self._led_pin.toggle()
 
+    def __str__(self) -> str:
+        return self.name
     
+    def __repr__(self):
+        return str(self)

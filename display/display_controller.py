@@ -22,7 +22,7 @@ class DisplayController:
         # 16 char x 8 lines (2 yellow and 6 blue)
         self._display = SSD1306_I2C(128, 64, self._i2c)
 
-    def print_line(self, msg, line_num, center=False, show_immediately=True, clear = True):
+    def print_line(self, msg, line_num, center=False, show_immediately=True, clear=True):
         if clear:
             self.clear_line(line_num, False)
         y = (line_num-1)*LINE_HEIGHT_PIXELS
@@ -48,13 +48,14 @@ class DisplayController:
         self._display.show()
 
     def clear_line(self, line, immediate_show=True):
-        self._display.rect(0, (line-1)*LINE_HEIGHT_PIXELS, SCREEN_WIDTH_PIXELS,
+        self._display.rect(0, (line-1) * LINE_HEIGHT_PIXELS, SCREEN_WIDTH_PIXELS,
                            LINE_HEIGHT_PIXELS, 0, True)
         if immediate_show:
             self._display.show()
 
     def clear_top(self):
-        self._display.rect(0, 0, SCREEN_WIDTH_PIXELS, LINE_HEIGHT_PIXELS * 2, 0, True)
+        self._display.rect(0, 0, SCREEN_WIDTH_PIXELS,
+                           LINE_HEIGHT_PIXELS * 2, 0, True)
         self._display.show()
 
     def clear_bottom(self):
@@ -63,7 +64,6 @@ class DisplayController:
         self._display.show()
 
     def time_and_score(self, time, score):
-        self.clear_bottom()
-        self.print_line(f"T: {time}", 3, show_immediately=False)
+        self.print_line(f"T: {time:.1f}", 3, show_immediately=False)
         self.print_line(f"S: {score}", 4, show_immediately=False)
         self.show()
