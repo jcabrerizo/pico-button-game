@@ -1,3 +1,4 @@
+from game.status import GameStatus
 from .ssd1306 import SSD1306_I2C
 from machine import Pin, I2C
 
@@ -64,6 +65,38 @@ class DisplayController:
         self._display.show()
 
     def time_and_score(self, time, score):
-        self.print_line(f"T: {time:.1f}", 3, show_immediately=False)
-        self.print_line(f"S: {score}", 4, show_immediately=False)
+        self.print_line(f"Time: {time:.1f}", 1,
+                        center=True, show_immediately=False)
+        self.print_line(f"{score}", 2, center=True, show_immediately=False)
         self.show()
+
+    def welcome(self, game_status: GameStatus):
+        self.print_line(
+            f'Time: {game_status.game_duration:.1f}', 1, True)
+
+    def update_target_button(self, button_name):
+        self.print_line(f"> {button_name} <", 8, True)
+
+    def start_game(self, game_status: GameStatus):
+        self.clear_line(6, False)
+        self.clear_line(7, False)
+        self.update_status(game_status)
+
+    def update_status(self, game_status: GameStatus):
+        self._display.invert(False)
+        self.time_and_score(game_status.get_remaining_time(),
+                            game_status.get_correct_counter())
+
+    def show_round_results(self, game_status: GameStatus):
+        self._display.invert(True)
+        self.time_and_score(
+            game_status.game_duration, game_status.get_correct_counter())
+        self.print_line(
+            f"{game_status.get_correct_percentage():.1f}%", 5, show_immediately=False)
+        self.print_line(f"x {game_status.get_incorrect_counter()}", 6)
+
+    def game_over(self):
+        self.clear_all()
+        self._display.invert(True)
+        self.print_line('GAME OVER', 4, center=True)
+        print("-GAME OVER-")

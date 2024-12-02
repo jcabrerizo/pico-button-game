@@ -1,65 +1,55 @@
+from .status import GameStatus
 from time import sleep
 
 
 class GameControl:
 
-    TIMEOUT = 5
+    GAME_DURATION = 5.0
     TIMER_DELTA = 0.1
     BAITS = 1
 
     def __init__(self, display_control, button_control) -> None:
         self._display_control = display_control
         self._button_control = button_control
+        self._game = GameStatus(GameControl.GAME_DURATION)
         self.reset()
 
     def reset(self):
-        self.correct_pressed_counter = -1  # first press is for starting
-        self.incorrect_pressed_counter = 0
-        self.bait_pressed_counter = 0
-        self.button_time_counter = 0
-        self.timeout_status = False
+        self._game.reset()
         self.reset_request = False
         self.block_keys = False
         self.all_released = True
-        self._display_control.print_line(
-            f'Time: {GameControl.TIMEOUT}', 1, True)
+        
+        self._display_control.welcome(self._game)
         self.turn_on_leds()
 
-    def timer(self):
-        while True:
-            if self.reset_request:
+    def timer_control(self):
+        """ Method running in an independent thread to control the game time"""
+        if self.reset_request:
+            self.reset()
+            print("New game")
+        else:
+            if self._game.is_starting_new_game():
+                print("Starting game")
+                self._display_control.start_game(self._game)
+                self.target_button.on()
+            if self._game.is_started():
+                self._game.step_timer(GameControl.TIMER_DELTA)
+                self._display_control.update_status(self._game)
+            if self._game.timeout_reached():
+                print("Round timeout")
+                self.block_keys = True
+                percentage = self._game.get_correct_percentage()
+                print(f"{self._game.get_correct_counter()} | {
+                    self._game.get_incorrect_counter()} -> {percentage}%")
+                self._display_control.show_round_results(self._game)
                 self.reset()
-                print("New game")
-            else:
-                if self.correct_pressed_counter == 0 and self.button_time_counter == 0:
-                    print("Starting game")
-                    self._display_control.time_and_score(
-                        GameControl.TIMEOUT, 0)
-                    self.target_button.on()
-                if self.correct_pressed_counter >= 0:
-                    self.button_time_counter += GameControl.TIMER_DELTA
-                    self._display_control.time_and_score(
-                        GameControl.TIMEOUT-self.button_time_counter, self.correct_pressed_counter)
-                if self.button_time_counter >= GameControl.TIMEOUT:
-                    print("Round timeout")
-                    self.block_keys = True
-                    percentage = self.correct_pressed_counter * 100 / \
-                        (self.correct_pressed_counter + self.incorrect_pressed_counter) if (
-                            self.correct_pressed_counter + self.incorrect_pressed_counter) > 0 else 0
-                    print(f"{self.correct_pressed_counter} | {
-                        self.incorrect_pressed_counter} -> {percentage}%")
-                    # show next round time and current round points
-                    self._display_control.time_and_score(
-                        GameControl.TIMEOUT, self.correct_pressed_counter)
-                    self._display_control.print_line(
-                        f"{percentage:.1f}%", 5, show_immediately=False)
-                    self._display_control.print_line(
-                        f"x {self.incorrect_pressed_counter}", 6)
-                    self.reset()
-                    self.block_keys = False
-                sleep(GameControl.TIMER_DELTA)
+                self.block_keys = False
+            sleep(GameControl.TIMER_DELTA)
 
     def game_loop(self) -> None:
+        """ Method running in an infinite loop to handle the game events"""
+        self.timer_control()
         pressed_buttons = self._button_control.get_pressed()
         if len(pressed_buttons) == 0:
             self.all_released = True
@@ -87,17 +77,16 @@ class GameControl:
 
     def turn_on_leds(self)-> None:
         self.target_button = self._button_control.switch_random_led()
-        self._display_control.print_line(
-            f"> {self.target_button.name} <", 8, True)
+        self._display_control.update_target_button(self.target_button.name)
         self.bait_leds = self._button_control.get_baits(
             self.target_button, GameControl.BAITS)
 
     def correct_press(self) -> None:
-        self.correct_pressed_counter += 1
+        self._game.correct_press()
         self.turn_on_leds()
 
     def incorrect_press(self) -> None:
-        self.incorrect_pressed_counter += 1
+        self._game.incorrect_press()
 
     def swallow_bait(self) -> None:
-        self.bait_pressed_counter += 1
+        self._game.swallow_bait()
