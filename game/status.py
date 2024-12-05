@@ -1,14 +1,12 @@
 class GameStatus:
 
-    def __init__(self, game_duration:float) -> None:
-        self.game_duration = game_duration
-
-    def reset(self):
+    def reset(self, game_duration: float):
         self.correct_pressed_counter = -1  # first press is for starting
         self.incorrect_pressed_counter = 0
         self.bait_pressed_counter = 0
         self.button_time_counter = 0
-
+        self.game_duration=game_duration
+    
     def correct_press(self) -> None:
         self.correct_pressed_counter += 1
 
@@ -20,6 +18,10 @@ class GameStatus:
 
     def get_remaining_time(self) -> float:
         return self.game_duration - self.button_time_counter
+  
+    def is_waiting_for_new_game(self) -> bool:
+        return self.correct_pressed_counter == -1
+    
     def is_starting_new_game(self) -> bool:
         return self.correct_pressed_counter == 0 and self.button_time_counter == 0
 

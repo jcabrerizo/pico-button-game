@@ -19,7 +19,7 @@ During gameplay, the display will update to show both the remaining time and the
    - [ ] Additional lighting effects.  
 
 2. **Customizable Game Duration**  
-   - [ ] Allow players to adjust the game timer.  
+   - [x] Allow players to adjust the game timer. 
 
 3. **Multiplayer Features**  
    - [ ] Add Wi-Fi support for multiplayer modes.  

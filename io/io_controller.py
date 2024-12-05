@@ -1,13 +1,16 @@
 # not supported on MicroPython. TODO: check https://micropython-stubs.readthedocs.io/en/main/typing_mpy.html
 # from typing import List
-from button.button import Button
-from machine import Pin
+from io.button import Button
+from machine import Pin, ADC
 import random
 
 
-class ButtonControl:
-    def __init__(self, buttons: tuple[Button, ...]) -> None:
+class IoControl:
+    CONVERSION_FACTOR = 3.3 / (65535)
+    
+    def __init__(self, buttons: tuple[Button, ...], time_selector_pin:int) -> None:
         self._buttons = buttons
+        self._potentiometer = ADC(time_selector_pin)
 
     # def get_pressed(self) -> List[Button]:
     def get_pressed(self):
@@ -43,3 +46,6 @@ class ButtonControl:
     def turn_all_off(self) -> None:
         for b in self._buttons:
             b.off()
+
+    def get_time_selector_value(self):
+        return self._potentiometer.read_u16() * IoControl.CONVERSION_FACTOR

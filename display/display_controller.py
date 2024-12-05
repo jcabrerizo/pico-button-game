@@ -78,8 +78,8 @@ class DisplayController:
         self.print_line(f"> {button_name} <", 8, True)
 
     def start_game(self, game_status: GameStatus):
+        self.clear_line(5, False)
         self.clear_line(6, False)
-        self.clear_line(7, False)
         self.update_status(game_status)
 
     def update_status(self, game_status: GameStatus):

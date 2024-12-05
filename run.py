@@ -1,5 +1,5 @@
-from button import ButtonControl
-from button import Button
+from io import IoControl
+from io import Button
 from game import GameControl
 from machine import Pin, Timer, reset
 from utime import sleep
@@ -15,9 +15,9 @@ WHITE = Button("WHITE", led_pin=21, button_pin=11)
 
 buttons = (BLUE, RED, WHITE)
 
-button_ctr = ButtonControl(buttons)
+io_ctr = IoControl(buttons, 26)
 game_controller = GameControl(
-    button_control=button_ctr,
+    io_control=io_ctr,
     display_control=display_ctr
 )
 
@@ -34,5 +34,5 @@ while True:
 board_led_blinker.deinit()
 board_led.off()
 display_ctr.game_over()
-button_ctr.turn_all_off()
+io_ctr.turn_all_off()
 reset()
