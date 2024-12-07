@@ -9,11 +9,22 @@ board_led = Pin("LED", Pin.OUT)
 
 display_ctr = DisplayController()
 
-BLUE = Button("BLUE", led_pin=22, button_pin=8)
-RED = Button("RED", led_pin=28, button_pin=5)
-WHITE = Button("WHITE", led_pin=21, button_pin=11)
+# """ Breadboard pinout""" 
+# BLUE=Button("BLUE", led_pin=22, button_pin=8),
+# RED=Button("RED", led_pin=28, button_pin=5),
+# WHITE=Button("WHITE", led_pin=21, button_pin=11)
 
-buttons = (BLUE, RED, WHITE)
+# """ Assembled pinout"""
+BLUE = Button("BLUE", led_pin=2, button_pin=3)
+# RED = Button("RED", led_pin=6, button_pin=7)
+WHITE = Button("WHITE", led_pin=4, button_pin=5)
+# GREEN = Button("GREEN", led_pin=8, button_pin=9)
+
+buttons = (
+    BLUE,
+    # RED,
+    WHITE
+)
 
 io_ctr = IoControl(buttons, 26)
 game_controller = GameControl(
