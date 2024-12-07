@@ -1,3 +1,4 @@
+import sys
 from game.status import GameStatus
 from .ssd1306 import SSD1306_I2C
 from machine import Pin, I2C
@@ -21,8 +22,13 @@ class DisplayController:
         )
         # 0.96 inch oled IIC Serial White OLED Display Module 128X64
         # 16 char x 8 lines (2 yellow and 6 blue)
-        self._display = SSD1306_I2C(128, 64, self._i2c)
-
+        try:
+            self._display = SSD1306_I2C(128, 64, self._i2c)
+        except OSError:
+            print(f"Error initializing display as {self._i2c}", file=sys.stderr)
+            sys.exit(1)
+            
+            
     def print_line(self, msg, line_num, center=False, show_immediately=True, clear=True):
         if clear:
             self.clear_line(line_num, False)
