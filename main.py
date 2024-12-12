@@ -16,14 +16,15 @@ display_ctr = DisplayController()
 
 # """ Assembled pinout"""
 BLUE = Button("BLUE", led_pin=2, button_pin=3)
-# RED = Button("RED", led_pin=6, button_pin=7)
 WHITE = Button("WHITE", led_pin=4, button_pin=5)
-# GREEN = Button("GREEN", led_pin=8, button_pin=9)
+RED = Button("RED", led_pin=6, button_pin=7)
+GREEN = Button("GREEN", led_pin=8, button_pin=9)
 
 buttons = (
     BLUE,
-    # RED,
-    WHITE
+    WHITE,
+    RED,
+    GREEN
 )
 
 io_ctr = IoControl(buttons, 26)
